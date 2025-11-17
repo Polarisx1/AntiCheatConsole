@@ -1,6 +1,6 @@
--- AntiCheatConsole All-in-One Loader (Fixed)
-loadstring([[
--- == AntiCheatConsole v1.1 - Fixed pcall ==
+-- AntiCheatConsole v1.2 - Safe Loadstring
+local code = [[
+-- == AntiCheatConsole v1.2 - Apocalypse Safe ==
 local Console = {}
 Console.Settings = {
     EnableSwordTouch = false,
@@ -30,6 +30,7 @@ UIListLayout.Padding = UDim.new(0,5)
 UIListLayout.FillDirection = Enum.FillDirection.Vertical
 UIListLayout.Parent = Frame
 
+-- Toggle button creator
 local function createToggle(name, default)
     local Btn = Instance.new("TextButton")
     Btn.Size = UDim2.new(1,0,0,30)
@@ -56,13 +57,13 @@ UIS.InputBegan:Connect(function(input,gpe)
     end
 end)
 
--- Hook AntiCheatSwords
+-- Disable original AntiCheatSwords
 local AntiScript = LocalPlayer.PlayerGui:FindFirstChild("AntiCheatSwords")
 if AntiScript then
     AntiScript.Enabled = false
 end
 
--- Sword tracking
+-- Track sword hits
 function Console:TrackMySword(tool, handle)
     if not handle then return end
     handle.Touched:Connect(function(hit)
@@ -79,6 +80,7 @@ function Console:TrackMySword(tool, handle)
     end)
 end
 
+-- Track new tools in character
 function Console:TrackCharacter(char)
     char.ChildAdded:Connect(function(child)
         if child:IsA("Tool") and child:FindFirstChild("Handle") and child:FindFirstChild("IsTouched") then
@@ -87,7 +89,7 @@ function Console:TrackCharacter(char)
     end)
 end
 
--- Connect character events
+-- Connect to character events
 LocalPlayer.CharacterAdded:Connect(function(char)
     Console:TrackCharacter(char)
 end)
@@ -95,7 +97,7 @@ if LocalPlayer.Character then
     Console:TrackCharacter(LocalPlayer.Character)
 end
 
--- Auto-apply to existing tools
+-- Auto-hook existing tools
 for _, tool in pairs(LocalPlayer.Backpack:GetChildren()) do
     if tool:IsA("Tool") and tool:FindFirstChild("Handle") and tool:FindFirstChild("IsTouched") then
         Console:TrackMySword(tool, tool.Handle)
@@ -107,6 +109,21 @@ function Console:Log(msg)
     print("[AntiCheatConsole] "..tostring(msg))
 end
 
-Console:Log("AntiCheatConsole v1.1 loaded successfully.")
+Console:Log("AntiCheatConsole v1.2 loaded safely.")
 return Console
-]])()
+]]
+
+-- Safe execution using pcall
+local fn, loadErr = loadstring(code)
+if not fn then
+    warn("Failed to compile AntiCheatConsole:", loadErr)
+    return
+end
+
+local success, console = pcall(fn)
+if not success then
+    warn("Error running AntiCheatConsole:", console)
+    return
+end
+
+console:Log("AntiCheatConsole executed successfully!")
