@@ -1,8 +1,6 @@
--- AntiCheatConsole All-in-One Loader
+-- AntiCheatConsole All-in-One Loader (Fixed)
 loadstring([[
--- == AntiCheatConsole v1.0 - Apocalypse Mode ==
--- Everything self-contained for testing & debugging your AntiCheatSwords
-
+-- == AntiCheatConsole v1.1 - Fixed pcall ==
 local Console = {}
 Console.Settings = {
     EnableSwordTouch = false,
@@ -12,7 +10,7 @@ Console.Settings = {
     DisableAll = false,
 }
 
--- Create GUI
+-- GUI Setup
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local ScreenGui = Instance.new("ScreenGui")
@@ -49,7 +47,7 @@ for setting,_ in pairs(Console.Settings) do
     createToggle(setting, Console.Settings[setting])
 end
 
--- Keybind toggle for GUI visibility
+-- GUI toggle with RightShift
 local UIS = game:GetService("UserInputService")
 UIS.InputBegan:Connect(function(input,gpe)
     if gpe then return end
@@ -58,13 +56,13 @@ UIS.InputBegan:Connect(function(input,gpe)
     end
 end)
 
--- Hooking AntiCheatSwords
+-- Hook AntiCheatSwords
 local AntiScript = LocalPlayer.PlayerGui:FindFirstChild("AntiCheatSwords")
 if AntiScript then
-    AntiScript.Enabled = false -- disable original script
+    AntiScript.Enabled = false
 end
 
--- Overriding Functions
+-- Sword tracking
 function Console:TrackMySword(tool, handle)
     if not handle then return end
     handle.Touched:Connect(function(hit)
@@ -89,6 +87,7 @@ function Console:TrackCharacter(char)
     end)
 end
 
+-- Connect character events
 LocalPlayer.CharacterAdded:Connect(function(char)
     Console:TrackCharacter(char)
 end)
@@ -108,6 +107,6 @@ function Console:Log(msg)
     print("[AntiCheatConsole] "..tostring(msg))
 end
 
-Console:Log("AntiCheatConsole loaded successfully.")
+Console:Log("AntiCheatConsole v1.1 loaded successfully.")
 return Console
 ]])()
