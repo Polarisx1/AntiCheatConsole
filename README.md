@@ -19,4 +19,4 @@ Supports overriding sword touch, logging hits, ignoring age checks, tracking pal
 2. In your executor / Roblox Studio, run:
 
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/AntiCheatConsole/main/loader.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Polarisx1/AntiCheatConsole/main/loader.lua"))()
